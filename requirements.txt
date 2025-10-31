@@ -1,0 +1,10 @@
+streamlit==1.36.0
+python-dotenv==1.0.1
+pymupdf==1.24.7
+faiss-cpu>=1.9.0
+numpy==1.26.4
+sentence-transformers==2.7.0
+huggingface_hub==0.24.6
+google-generativeai==0.7.2
+rank-bm25==0.2.2
+# Remove htmlmin — incompatible with Python 3.13

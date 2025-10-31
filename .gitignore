@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+*.pdf
+backend/vector_store/
+backend/history/
+data/uploaded_files/
+.env

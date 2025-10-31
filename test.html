@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UniMate Chatbot - Test Page</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        text-align: center;
+        color: white;
+        padding: 40px;
+        max-width: 800px;
+      }
+
+      h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 40px;
+        opacity: 0.9;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 40px;
+      }
+
+      .feature-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 30px 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s, background 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 10px;
+      }
+
+      .feature-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .feature-desc {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .instructions {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 30px;
+        margin-top: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: left;
+      }
+
+      .instructions h2 {
+        margin-top: 0;
+        font-size: 1.8rem;
+      }
+
+      .instructions ol {
+        font-size: 1.1rem;
+        line-height: 1.8;
+      }
+
+      .instructions code {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-family: "Courier New", monospace;
+      }
+
+      .chatbot-indicator {
+        position: fixed;
+        bottom: 100px;
+        right: 100px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 15px 25px;
+        border-radius: 30px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        font-weight: 600;
+        animation: pulse 2s infinite;
+        display: none;
+      }
+
+      .chatbot-indicator.show {
+        display: block;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.8;
+        }
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 20px;
+      }
+
+      .status-badge.connected {
+        background: rgba(40, 167, 69, 0.3);
+        border: 2px solid rgba(40, 167, 69, 0.6);
+      }
+
+      .status-badge.disconnected {
+        background: rgba(220, 53, 69, 0.3);
+        border: 2px solid rgba(220, 53, 69, 0.6);
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2rem;
+        }
+        .subtitle {
+          font-size: 1.2rem;
+        }
+        .chatbot-indicator {
+          bottom: 90px;
+          right: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📚 UniMate AI Assistant</h1>
+      <p class="subtitle">Your intelligent university companion</p>
+
+      <div id="api-status" class="status-badge disconnected">
+        🔴 Checking API connection...
+      </div>
+
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <div class="feature-title">PDF Upload</div>
+          <div class="feature-desc">
+            Upload and analyze multiple PDF documents
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <div class="feature-title">Smart Search</div>
+          <div class="feature-desc">Hybrid FAISS + BM25 retrieval system</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <div class="feature-title">Chat Interface</div>
+          <div class="feature-desc">Natural conversation with context</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <div class="feature-title">Citations</div>
+          <div class="feature-desc">Source references with page numbers</div>
+        </div>
+      </div>
+
+      <div class="instructions">
+        <h2>🚀 Quick Start</h2>
+        <ol>
+          <li>
+            Make sure your API server is running on
+            <code>http://localhost:5000</code>
+          </li>
+          <li>Click the chatbot button in the bottom-right corner</li>
+          <li>Upload PDF files (optional) or ask any question</li>
+          <li>Get AI-powered answers with source citations</li>
+        </ol>
+
+        <p style="margin-top: 20px; opacity: 0.8">
+          <strong>Not running yet?</strong> Start the API with:<br />
+          <code>python api_server.py</code>
+        </p>
+      </div>
+    </div>
+
+    <div class="chatbot-indicator" id="chatbot-hint">
+      👉 Click the chat button to start!
+    </div>
+
+    <!-- Include the chatbot snippet -->
+    <div id="unimate-chatbot-root"></div>
+
+    <style>
+      #unimate-chatbot-root {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+      }
+      #unimate-chat-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        font-size: 28px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s;
+      }
+      #unimate-chat-btn:hover {
+        transform: scale(1.1);
+      }
+      #unimate-window {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 380px;
+        height: 600px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      #unimate-window.show {
+        display: flex;
+        animation: slideUp 0.3s;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .um-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .um-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background: #f8f9fa;
+      }
+      .um-msg {
+        margin-bottom: 16px;
+        display: flex;
+        flex-direction: column;
+      }
+      .um-msg.user {
+        align-items: flex-end;
+      }
+      .um-msg-content {
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .um-msg.user .um-msg-content {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-bottom-right-radius: 4px;
+      }
+      .um-msg.assistant .um-msg-content {
+        background: white;
+        color: #333;
+        border: 1px solid #e1e4e8;
+        border-bottom-left-radius: 4px;
+      }
+      .um-typing {
+        display: flex;
+        gap: 4px;
+        padding: 12px 16px;
+        background: white;
+        border-radius: 12px;
+        width: fit-content;
+        border: 1px solid #e1e4e8;
+      }
+      .um-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #667eea;
+        animation: typing 1.4s infinite;
+      }
+      .um-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .um-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes typing {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-10px);
+        }
+      }
+      .um-input-area {
+        padding: 16px;
+        background: white;
+        border-top: 1px solid #e1e4e8;
+      }
+      .um-input-wrapper {
+        display: flex;
+        gap: 8px;
+      }
+      .um-input {
+        flex: 1;
+        border: 1px solid #e1e4e8;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 14px;
+        outline: none;
+      }
+      .um-input:focus {
+        border-color: #667eea;
+      }
+      .um-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .um-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .um-header-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-left: 8px;
+      }
+      @media (max-width: 480px) {
+        #unimate-window {
+          width: calc(100vw - 40px);
+          height: calc(100vh - 100px);
+        }
+      }
+    </style>
+
+    <script>
+      (function () {
+        const API_URL = "http://localhost:5000";
+
+        let sessionId = null;
+        let isOpen = false;
+
+        // Check API connection
+        async function checkAPI() {
+          const statusBadge = document.getElementById("api-status");
+          try {
+            const res = await fetch(`${API_URL}/api/health`);
+            const data = await res.json();
+            if (data.status === "ok") {
+              statusBadge.textContent = "🟢 API Connected";
+              statusBadge.className = "status-badge connected";
+              setTimeout(() => {
+                document.getElementById("chatbot-hint").classList.add("show");
+              }, 1000);
+            }
+          } catch (e) {
+            statusBadge.textContent =
+              "🔴 API Disconnected - Start api_server.py";
+            statusBadge.className = "status-badge disconnected";
+          }
+        }
+
+        // Create HTML
+        const root = document.getElementById("unimate-chatbot-root");
+        root.innerHTML = `
+        <button id="unimate-chat-btn" title="Chat with UniMate">💬</button>
+        <div id="unimate-window">
+          <div class="um-header">
+            <div style="display:flex;align-items:center;gap:10px;font-weight:600;">
+              <span>📚</span><span>UniMate Assistant</span>
+            </div>
+            <div>
+              <button class="um-header-btn" id="um-clear" title="Clear">🗑️</button>
+              <button class="um-header-btn" id="um-close" title="Close">✕</button>
+            </div>
+          </div>
+          <div class="um-messages" id="um-msgs"></div>
+          <div class="um-input-area">
+            <div class="um-input-wrapper">
+              <input type="file" id="um-file" accept=".pdf" multiple style="display:none">
+              <button class="um-btn" onclick="document.getElementById('um-file').click()" style="padding:10px 12px;" title="Upload PDF">📎</button>
+              <input type="text" class="um-input" id="um-input" placeholder="Ask me anything...">
+              <button class="um-btn" id="um-send">Send</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+        const chatBtn = document.getElementById("unimate-chat-btn");
+        const chatWindow = document.getElementById("unimate-window");
+        const msgsDiv = document.getElementById("um-msgs");
+        const input = document.getElementById("um-input");
+        const sendBtn = document.getElementById("um-send");
+        const closeBtn = document.getElementById("um-close");
+        const clearBtn = document.getElementById("um-clear");
+        const fileInput = document.getElementById("um-file");
+
+        function toggleChat() {
+          isOpen = !isOpen;
+          chatWindow.classList.toggle("show");
+          if (isOpen) {
+            document.getElementById("chatbot-hint").classList.remove("show");
+            if (!sessionId) createSession();
+            input.focus();
+          }
+        }
+
+        function addMsg(role, content) {
+          const div = document.createElement("div");
+          div.className = `um-msg ${role}`;
+          div.innerHTML = `<div class="um-msg-content">${content.replace(
+            /\n/g,
+            "<br>"
+          )}</div>`;
+          msgsDiv.appendChild(div);
+          msgsDiv.scrollTop = msgsDiv.scrollHeight;
+        }
+
+        function showTyping() {
+          const div = document.createElement("div");
+          div.id = "um-typing";
+          div.className = "um-msg assistant";
+          div.innerHTML =
+            '<div class="um-typing"><div class="um-dot"></div><div class="um-dot"></div><div class="um-dot"></div></div>';
+          msgsDiv.appendChild(div);
+          msgsDiv.scrollTop = msgsDiv.scrollHeight;
+        }
+
+        function hideTyping() {
+          const t = document.getElementById("um-typing");
+          if (t) t.remove();
+        }
+
+        async function createSession() {
+          try {
+            const res = await fetch(`${API_URL}/api/session/create`, {
+              method: "POST",
+            });
+            const data = await res.json();
+            sessionId = data.session_id;
+            addMsg(
+              "assistant",
+              "Hello! I'm UniMate. Upload PDFs or ask me anything!"
+            );
+          } catch (e) {
+            addMsg(
+              "assistant",
+              "❌ Could not connect to server. Make sure api_server.py is running!"
+            );
+          }
+        }
+
+        async function sendMessage() {
+          const msg = input.value.trim();
+          if (!msg || !sessionId) return;
+
+          addMsg("user", msg);
+          input.value = "";
+          sendBtn.disabled = true;
+          showTyping();
+
+          try {
+            const res = await fetch(`${API_URL}/api/query`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ session_id: sessionId, query: msg }),
+            });
+            const data = await res.json();
+            hideTyping();
+            addMsg("assistant", data.answer || data.error);
+          } catch (e) {
+            hideTyping();
+            addMsg("assistant", "❌ Error: " + e.message);
+          } finally {
+            sendBtn.disabled = false;
+          }
+        }
+
+        fileInput.addEventListener("change", async (e) => {
+          const files = e.target.files;
+          if (!files.length || !sessionId) return;
+
+          const formData = new FormData();
+          formData.append("session_id", sessionId);
+          for (let f of files) formData.append("files", f);
+
+          addMsg("assistant", "📤 Uploading and indexing...");
+          sendBtn.disabled = true;
+
+          try {
+            const res = await fetch(`${API_URL}/api/upload`, {
+              method: "POST",
+              body: formData,
+            });
+            const data = await res.json();
+            if (res.ok) {
+              addMsg(
+                "assistant",
+                `✅ Indexed ${data.total_chunks} chunks from ${data.documents.length} document(s)!`
+              );
+            } else {
+              addMsg("assistant", "❌ Upload failed: " + data.error);
+            }
+          } catch (e) {
+            addMsg("assistant", "❌ Upload error: " + e.message);
+          } finally {
+            sendBtn.disabled = false;
+            fileInput.value = "";
+          }
+        });
+
+        async function clearChat() {
+          if (!confirm("Clear all messages?")) return;
+          try {
+            await fetch(`${API_URL}/api/session/clear`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ session_id: sessionId }),
+            });
+            msgsDiv.innerHTML = "";
+            addMsg("assistant", "Chat cleared!");
+          } catch (e) {
+            console.error(e);
+          }
+        }
+
+        chatBtn.addEventListener("click", toggleChat);
+        closeBtn.addEventListener("click", toggleChat);
+        sendBtn.addEventListener("click", sendMessage);
+        clearBtn.addEventListener("click", clearChat);
+        input.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") sendMessage();
+        });
+
+        // Check API on load
+        checkAPI();
+      })();
+    </script>
+  </body>
+</html>
