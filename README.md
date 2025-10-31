@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## 📚 UniMate – AI University Assistant
 
 UniMate is an AI-powered assistant that lets you query your PDF documents in natural language. Upload reports, notes, or resumes; ask a question; and get a clear, well-formatted answer grounded in your files. If the answer is not in your PDFs, UniMate falls back to a high‑quality general answer using Google Gemini.
@@ -98,3 +99,6 @@ Then open `http://localhost:8501` in your browser.
 
 - Never commit `.env` files or API keys.
 - The repository’s `.gitignore` is configured to keep secrets and cache files out of Git.
+=======
+# Chatbot
+>>>>>>> 57cd13efd4472f58a20c09860084c49bd82a452f
